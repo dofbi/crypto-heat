@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Fichier (Français)
+usage="Utilisation : $0 [-n <nombre>] [-u] [-d] [-h]"
+limit_ligne="Limite le nombre de lignes à afficher (par défaut: 10)"
+crypto_up="Top prix crypto en hausse, fenêtre mobile de 24 heures (par défaut)"
+crypto_down="Top prix de crypto-monnaie en baisse, fenêtre mobile de 24 heures"
+help_desc="Affiche l'aide"
+invalid_option="Option invalide :"
+binance_error="La variable d'environnement BINANCE_API n'est pas définie."
+symbol="Symbole"
+price="Prix"
+change="Changement"

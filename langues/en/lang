@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Fichier (Anglais)
+usage="Usage: $0 [-n <number>] [-o <asc|des>] [-h]"
+limit_desc="Limit the number of lines to display (default: 10)"
+crypto_up="Top crypto up price 24 hour rolling window(default)"
+crypto_down="Top crypto down price 24 hour rolling window"
+help_desc="Display this help message"
+invalid_option="Invalid option:"
+binance_error="BINANCE_API environment variable is not defined."
+symbol="Symbol"
+price="Price"
+change="Change"
