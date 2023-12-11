@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Chemin vers les fichiers de langue
+LANG_DIR="langues"
+
+# Récupérer la variable de langue du système
+system_lang=$(locale | awk -F= '/LANG/{print $2}' | cut -d'_' -f1 | head -n 1)  # Extraire la langue principale de $LANG
+
+# Charger les fichiers de langue en fonction de la langue du système
+source "$LANG_DIR/$system_lang/lang"
+
+# Définition des options par défaut
+limit=10  # Nombre de lignes par défaut à afficher
+order="desc"  # Par défaut, tri décroissant
+
+# ... (le reste du script reste inchangé)
+
+# Affichage de l'aide et des messages dans la langue appropriée
+print_help() {
+    echo "$usage"
+    echo ""
+    echo "Options :"
+    echo "  -n <nombre>                     $limit_ligne"
+    echo "  -u                              $crypto_up"
+    echo "  -d                              $crypto_down"
+    echo "  -h                              $help_desc"
+    exit 0
+}
+
+while getopts ":n:udh" opt; do
+    case $opt in
+        n)
+            limit=$OPTARG
+            ;;
+        u)
+            order="desc"
+            ;;
+        d)
+            order="asc"
+            ;;
+        h)
+            print_help
+            ;;
+        \?)
+            echo "$invalid_option -$OPTARG" >&2
+            print_help
+            ;;
+    esac
+done
+
+# Vérifie si la variable d'environnement BINANCE_API est définie
+if [ -z "$BINANCE_API" ]; then
+  echo "$binance_error"
+  exit 1
+fi
+
+# Utilise curl pour récupérer les données depuis l'API et utilise jq pour les formater et les trier
+formatted_data=$(curl -s "$BINANCE_API" | jq -r 'sort_by(.priceChangePercent | tonumber) | if "'"$order"'" == "asc" then . else reverse end | limit('$limit'; .[]) | [.symbol, .lastPrice, .priceChangePercent] | @tsv')
+
+
+# Affichage des données formatées sous forme de tableau
+echo -e "$symbol\t$price\t$change"
+echo -e "$formatted_data" | column -t
